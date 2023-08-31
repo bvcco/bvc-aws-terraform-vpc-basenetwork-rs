@@ -1,28 +1,28 @@
-# aws-terraform-vpc_basenetwork
-
-This module sets up basic network components for an account in a specific region. Optionally it will setup a basic VPN gateway and VPC flow logs.
-
-## Basic Usage
-
-```
-module "vpc" {
- source = "git@github.com:rackspace-infrastructure-automation/aws-terraform-vpc_basenetwork//?ref=v0.0.10"
-
- vpc_name = "MyVPC"
-}
-```
-
-*By default only `vpc_name` is required to be set. Unless changed `aws_region` defaults to `us-west-2` and will need to be updated for other regions. `source` will also need to be declared depending on where the module lives. Given default settings the following resources are created:
-
-- VPC Flow Logs
-- 2 AZs with public/private subnets from the list of 3 static CIDRs ranges available for each as defaults
-- Public/private subnets with the count related to custom\_azs if defined or region AZs automatically calculated by Terraform otherwise
-- NAT Gateways will be created in each AZ's first public subnet
-- EIPs will be created in all public subnets for NAT gateways to use
-- Route Tables, including routes to NAT gateways if applicable
-
-
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+ # AWS Terraform VPC Base Network
+
+ This module sets up basic network components for an account in a specific region. Optionally it will setup a basic VPN gateway and VPC flow logs.
+
+ ## Basic Usage
+
+ ```hcl
+ module "vpc" {
+   source = "git@github.com:bvcco/bvc-aws-terraform-vpc-basenetwork.git//?ref=v1.4.0"
+   vpc_name = "MyVPC"
+ }
+ ```
+
+ Full working references are available at [examples](examples)
+ ## Default Resources
+
+ By default only `vpc_name` is required to be set. Unless changed `aws_region` defaults to `us-west-2` and will need to be updated for other regions. `source` will also need to be declared depending on where the module lives. Given default settings the following resources are created:
+
+ - VPC Flow Logs
+ - 2 AZs with public/private subnets from the list of 3 static CIDRs ranges available for each as defaults
+ - Public/private subnets with the count related to custom\_azs if defined or region AZs automatically calculated by Terraform otherwise
+ - NAT Gateways will be created in each AZ's first public subnet
+ - EIPs will be created in all public subnets for NAT gateways to use
+ - Route Tables, including routes to NAT gateways if applicable
 
 ## Requirements
 
@@ -35,7 +35,7 @@ module "vpc" {
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 4.50.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.14.0 |
 
 ## Modules
 
@@ -78,6 +78,7 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_associate_public_ip_addresses"></a> [associate\_public\_ip\_addresses](#input\_associate\_public\_ip\_addresses) | Whether or not to associate a public IP address with instances launched in the public subnets | `bool` | `false` | no |
 | <a name="input_az_count"></a> [az\_count](#input\_az\_count) | Number of AZs to utilize for the subnets | `string` | `"2"` | no |
 | <a name="input_build_flow_logs"></a> [build\_flow\_logs](#input\_build\_flow\_logs) | Whether or not to build flow log components in cloud watch logs | `bool` | `false` | no |
 | <a name="input_build_igw"></a> [build\_igw](#input\_build\_igw) | Whether or not to build an internet gateway.  If disabled, no public subnets or route tables, internet gateway,<br>or NAT Gateways will be created. | `bool` | `true` | no |

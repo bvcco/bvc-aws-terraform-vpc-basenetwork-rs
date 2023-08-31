@@ -75,6 +75,12 @@ variable "az_count" {
   default     = "2"
 }
 
+variable "associate_public_ip_addresses" {
+  description = "Whether or not to associate a public IP address with instances launched in the public subnets"
+  type        = bool
+  default     = false
+}
+
 variable "public_cidr_ranges" {
   description = "An array of CIDR ranges to use for public subnets"
   type        = list(string)

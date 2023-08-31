@@ -1,29 +1,28 @@
 /**
- * # aws-terraform-vpc_basenetwork
+ *  # AWS Terraform VPC Base Network
  *
- *This module sets up basic network components for an account in a specific region. Optionally it will setup a basic VPN gateway and VPC flow logs.
+ *  This module sets up basic network components for an account in a specific region. Optionally it will setup a basic VPN gateway and VPC flow logs.
  *
- *## Basic Usage
+ *  ## Basic Usage
  *
- *```
- *module "vpc" {
- *  source = "git@github.com:rackspace-infrastructure-automation/aws-terraform-vpc_basenetwork//?ref=v0.0.10"
+ *  ```hcl
+ *  module "vpc" {
+ *    source = "git@github.com:bvcco/bvc-aws-terraform-vpc-basenetwork.git//?ref=v1.4.0"
+ *    vpc_name = "MyVPC"
+ *  }
+ *  ```
  *
- *  vpc_name = "MyVPC"
- *}
- *```
+ *  Full working references are available at [examples](examples)
+ *  ## Default Resources
  *
- * Full working references are available at [examples](examples)
- *## Default Resources
+ *  By default only `vpc_name` is required to be set. Unless changed `aws_region` defaults to `us-west-2` and will need to be updated for other regions. `source` will also need to be declared depending on where the module lives. Given default settings the following resources are created:
  *
- *By default only `vpc_name` is required to be set. Unless changed `aws_region` defaults to `us-west-2` and will need to be updated for other regions. `source` will also need to be declared depending on where the module lives. Given default settings the following resources are created:
- *
- * - VPC Flow Logs
- * - 2 AZs with public/private subnets from the list of 3 static CIDRs ranges available for each as defaults
- * - Public/private subnets with the count related to custom_azs if defined or region AZs automatically calculated by Terraform otherwise
- * - NAT Gateways will be created in each AZ's first public subnet
- * - EIPs will be created in all public subnets for NAT gateways to use
- * - Route Tables, including routes to NAT gateways if applicable
+ *  - VPC Flow Logs
+ *  - 2 AZs with public/private subnets from the list of 3 static CIDRs ranges available for each as defaults
+ *  - Public/private subnets with the count related to custom_azs if defined or region AZs automatically calculated by Terraform otherwise
+ *  - NAT Gateways will be created in each AZ's first public subnet
+ *  - EIPs will be created in all public subnets for NAT gateways to use
+ *  - Route Tables, including routes to NAT gateways if applicable
 */
 
 locals {
@@ -44,6 +43,7 @@ data "aws_region" "current" {}
 # Basic VPC
 #############
 
+#tfsec:ignore:aws-ec2-require-vpc-flow-logs-for-all-vpcs
 resource "aws_vpc" "vpc" {
   cidr_block           = var.cidr_range
   instance_tenancy     = var.default_tenancy
@@ -109,7 +109,7 @@ resource "aws_subnet" "public_subnet" {
   vpc_id                  = aws_vpc.vpc.id
   cidr_block              = var.public_cidr_ranges[count.index]
   availability_zone       = element(local.azs, count.index)
-  map_public_ip_on_launch = true
+  map_public_ip_on_launch = var.associate_public_ip_addresses
 
   tags = merge(
     {
