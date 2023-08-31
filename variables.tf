@@ -49,14 +49,14 @@ variable "domain_name_servers" {
 
 variable "enable_dns_hostnames" {
   description = "Whether or not to enable DNS hostnames for the VPC"
-  type        = string
-  default     = "true"
+  type        = bool
+  default     = true
 }
 
 variable "enable_dns_support" {
   description = "Whether or not to enable DNS support for the VPC"
-  type        = string
-  default     = "true"
+  type        = bool
+  default     = true
 }
 
 #####################
@@ -111,7 +111,7 @@ EOF
 variable "public_subnet_tags" {
   description = "A list of maps containing tags to be applied to public subnets. List should either be the same length as the number of AZs to apply different tags per set of subnets, or a length of 1 to apply the same tags across all public subnets."
   type        = list(map(string))
-  default     = []
+  default     = [{}, ]
 }
 
 variable "private_cidr_ranges" {
@@ -150,7 +150,7 @@ EOF
 variable "private_subnet_tags" {
   description = "A list of maps containing tags to be applied to private subnets. List should either be the same length as the number of AZs to apply different tags per set of subnets, or a length of 1 to apply the same tags across all private subnets."
   type        = list(map(string))
-  default     = []
+  default     = [{}, ]
 }
 
 #######################
@@ -159,14 +159,14 @@ variable "private_subnet_tags" {
 
 variable "build_flow_logs" {
   description = "Whether or not to build flow log components in cloud watch logs"
-  default     = "false"
-  type        = string
+  default     = false
+  type        = bool
 }
 
 variable "build_s3_flow_logs" {
   description = "Whether or not to build flow log components in s3"
-  default     = "false"
-  type        = string
+  default     = false
+  type        = bool
 }
 
 variable "logging_bucket_name" {
@@ -207,8 +207,8 @@ variable "logging_bucket_encryption_kms_mster_key" {
 
 variable "logging_bucket_force_destroy" {
   description = "Whether all objects should be deleted from the bucket so that the bucket can be destroyed without error. These objects are not recoverable. ie. true"
-  type        = string
-  default     = "false"
+  type        = bool
+  default     = false
 }
 
 variable "build_igw" {
@@ -217,24 +217,24 @@ Whether or not to build an internet gateway.  If disabled, no public subnets or 
 or NAT Gateways will be created.
 EOF
 
-  default = "true"
-  type    = string
+  default = true
+  type    = bool
 }
 
 variable "build_nat_gateways" {
   description = "Whether or not to build a NAT gateway per AZ.  if `build_igw` is set to false, this value is ignored."
-  default     = "true"
-  type        = string
+  default     = true
+  type        = bool
 }
 
 variable "build_vpn" {
   description = "Whether or not to build a VPN gateway"
-  default     = "false"
-  type        = string
+  default     = false
+  type        = bool
 }
 
 variable "spoke_vpc" {
   description = "Whether or not the VPN gateway is a spoke of a Transit VPC"
-  default     = "false"
-  type        = string
+  default     = false
+  type        = bool
 }
